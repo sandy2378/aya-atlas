@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aya - L'Atlas des Saveurs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #c5a059; --dark: #1a1a1a; --grey: #f4f4f4; --green: #27ae60; }
+        body { font-family: 'Montserrat', sans-serif; margin: 0; background: var(--grey); }
+       
+        nav { background: var(--dark); padding: 15px; position: sticky; top: 0; z-index: 1000; display: flex; justify-content: center; gap: 15px; border-bottom: 2px solid var(--gold); }
+        nav a { color: var(--gold); text-decoration: none; font-weight: bold; font-size: 11px; text-transform: uppercase; cursor: pointer; }
+
+        header { background: white; padding: 30px 10px; text-align: center; border-bottom: 1px solid #ddd; }
+        header h1 { font-family: 'Playfair Display'; margin: 0; font-size: 26px; color: var(--dark); }
+
+        /* PANNEAU ADMIN */
+        #admin { display: none; max-width: 500px; margin: 20px auto; background: white; padding: 25px; border-radius: 15px; border: 2px solid var(--gold); }
+        .btn-secours { background: #34495e; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-size: 11px; width: 48%; font-weight: bold; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+
+        /* CATALOGUE */
+        #catalogue { padding: 30px 15px; max-width: 1200px; margin: auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        .book-card { background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border-bottom: 5px solid var(--gold); text-align: center; padding: 25px; display: flex; flex-direction: column; justify-content: space-between; }
+       
+        .price-main { font-size: 22px; font-weight: 700; color: var(--dark); margin-bottom: 5px; }
+        .price-others { font-size: 14px; color: var(--gold); font-weight: 600; margin-bottom: 20px; }
+        .btn-pay { background: var(--dark); color: var(--gold); border: 2px solid var(--gold); padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; margin-bottom: 15px; }
+        .btn-download { background: var(--green); color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; text-decoration: none; display: block; margin-top: 10px; }
+       
+        /* MODAL IBAN */
+        .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); }
+        .modal-content { background: white; margin: 15% auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; }
+        .iban-box { background: #f8f9fa; padding: 15px; border: 2px dashed var(--gold); font-family: monospace; font-weight: bold; margin: 20px 0; font-size: 15px; word-break: break-all; }
+
+        .unlock-zone { background: #fff9f0; padding: 15px; border-radius: 12px; border: 1px solid #ffeeba; margin-top: 15px; }
+        .admin-tools { margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee; display: flex; justify-content: space-between; }
+        .btn-mini { background: none; border: none; font-size: 10px; cursor: pointer; font-weight: bold; text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="#accueil">ACCUEIL</a>
+    <a href="#catalogue">CATALOGUE</a>
+    <a onclick="ouvrirAdmin()">🛠 ADMIN</a>
+</nav>
+
+<header id="accueil">
+    <h1>AYA - L'ATLAS DES SAVEURS</h1>
+    <p>Collection Culinaire Numérique</p>
+</header>
+
+<div id="ibanModal" class="modal">
+    <div class="modal-content">
+        <h2 style="color:var(--gold); margin:0;">PAIEMENT</h2>
+        <p>Effectuez votre virement ici :</p>
+        <div class="iban-box">TN59 12 301 00 00 133062172 43</div>
+        <p><strong>Bénéficiaire :</strong> RIM AYARI</p>
+        <button id="whatsappBtn" class="btn-download" style="background:#25D366;">J'AI PAYÉ, RECEVOIR LE CODE</button>
+        <button onclick="fermerIban()" style="background:none; border:none; color:red; margin-top:15px; cursor:pointer;">Fermer</button>
+    </div>
+</div>
+
+<div id="admin">
+    <div style="display:flex; justify-content: space-between; margin-bottom:15px;">
+        <button class="btn-secours" onclick="copierSauvegarde()">📥 TOUT COPIER</button>
+        <button class="btn-secours" onclick="restaurerSauvegarde()">📤 IMPORTER / SECOURS</button>
+    </div>
+    <h3 style="color:var(--gold); margin-top:0;">AJOUTER UN LIVRE</h3>
+    <input type="text" id="titre" placeholder="Titre du livre">
+    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
+        <input type="number" id="pDT" placeholder="TND">
+        <input type="number" id="pEUR" placeholder="Euro €">
+        <input type="number" id="pUSD" placeholder="Dollar $">
+    </div>
+    <input type="text" id="pdfLien" placeholder="Lien Google Drive du PDF">
+    <button onclick="validerAjout()" style="width:100%; padding:15px; background:var(--gold); color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer; margin-top:10px;">AJOUTER AU CATALOGUE</button>
+</div>
+
+<section id="catalogue">
+    <div class="grid" id="maGrille"></div>
+</section>
+
+<script>
+    let bibliotheque = JSON.parse(localStorage.getItem('aya_v5_final')) || [];
+    let modeAdmin = false;
+
+    // Le code change tous les jours (Ex: 0802 pour le 8 Février)
+    function obtenirCodeDuJour() {
+        const d = new Date();
+        return String(d.getDate()).padStart(2, '0') + String(d.getMonth() + 1).padStart(2, '0');
+    }
+
+    function ouvrirAdmin() {
+        if(prompt("Mot de passe Admin :") === "AYA2026") {
+            modeAdmin = true;
+            document.getElementById('admin').style.display = 'block';
+            afficherLivres();
+        }
+    }
+
+    function validerAjout() {
+        const t = document.getElementById('titre').value;
+        const link = document.getElementById('pdfLien').value;
+        if(!t || !link) return alert("Le titre et le lien PDF sont obligatoires !");
+       
+        const nouveauLivre = {
+            id: Date.now(),
+            titre: t,
+            pDT: document.getElementById('pDT').value || "0",
+            pEUR: document.getElementById('pEUR').value || "0",
+            pUSD: document.getElementById('pUSD').value || "0",
+            lien: link
+        };
+
+        bibliotheque.push(nouveauLivre);
+        sauvegarder();
+        document.getElementById('titre').value = "";
+        document.getElementById('pdfLien').value = "";
+        afficherLivres();
+    }
+
+    function afficherLivres() {
+        const grille = document.getElementById('maGrille');
+        grille.innerHTML = "";
+        bibliotheque.forEach(livre => {
+            grille.innerHTML += `
+                <div class="book-card">
+                    <div>
+                        <h3 style="margin-top:0;">${livre.titre}</h3>
+                        <div class="price-main">${livre.pDT} TND</div>
+                        <div class="price-others">${livre.pEUR} € | ${livre.pUSD} $</div>
+                        <button class="btn-pay" onclick="ouvrirIban('${livre.titre}')">💳 PAYER LE LIVRE</button>
+                    </div>
+
+                    <div class="unlock-zone">
+                        <small>CODE DE DÉBLOCAGE :</small>
+                        <input type="text" placeholder="Entrez le code" oninput="verifierCode(this, 'dl-${livre.id}')" style="text-align:center; margin-top:5px;">
+                        <div id="dl-${livre.id}" style="display:none;">
+                            <a href="${livre.lien}" class="btn-download" target="_blank">📥 TÉLÉCHARGER</a>
+                        </div>
+                    </div>
+
+                    ${modeAdmin ? `
+                        <div class="admin-tools">
+                            <button class="btn-mini" style="color:blue;" onclick="copierLivreUnique(${livre.id})">📋 COPIER CODE</button>
+                            <button class="btn-mini" style="color:red;" onclick="supprimer(${livre.id})">🗑 SUPPRIMER</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        });
+    }
+
+    function verifierCode(input, idBouton) {
+        if(input.value.trim() === obtenirCodeDuJour()) {
+            document.getElementById(idBouton).style.display = 'block';
+            input.style.border = "2px solid green";
+        }
+    }
+
+    function ouvrirIban(titre) {
+        document.getElementById('ibanModal').style.display = 'block';
+        document.getElementById('whatsappBtn').onclick = function() {
+            window.open(`https://wa.me/21646248269?text=Bonjour Rim, j'ai payé le livre : ${titre}`, '_blank');
+            fermerIban();
+        };
+    }
+
+    function fermerIban() { document.getElementById('ibanModal').style.display = 'none'; }
+
+    // --- FONCTIONS DE SAUVEGARDE ---
+
+    function sauvegarder() {
+        localStorage.setItem('aya_v5_final', JSON.stringify(bibliotheque));
+    }
+
+    function copierLivreUnique(id) {
+        const livre = bibliotheque.find(b => b.id === id);
+        navigator.clipboard.writeText(JSON.stringify(livre));
+        alert("Code du livre '" + livre.titre + "' copié ! Gardez-le précieusement.");
+    }
+
+    function copierSauvegarde() {
+        navigator.clipboard.writeText(JSON.stringify(bibliotheque));
+        alert("Bibliothèque complète copiée dans le presse-papier !");
+    }
+
+    function restaurerSauvegarde() {
+        const data = prompt("Collez ici le code d'un livre ou de toute la bibliothèque :");
+        if(data) {
+            try {
+                const objet = JSON.parse(data);
+                if(Array.isArray(objet)) {
+                    if(confirm("Importer toute la bibliothèque ? Cela remplacera vos livres actuels.")) {
+                        bibliotheque = objet;
+                    }
+                } else {
+                    bibliotheque.push(objet);
+                    alert("Livre ajouté avec succès !");
+                }
+                sauvegarder();
+                afficherLivres();
+            } catch(e) {
+                alert("Code invalide !");
+            }
+        }
+    }
+
+    function supprimer(id) {
+        if(confirm("Supprimer ce livre définitivement ?")) {
+            bibliotheque = bibliotheque.filter(b => b.id !== id);
+            sauvegarder();
+            afficherLivres();
+        }
+    }
+
+    window.onload = afficherLivres;
+</script>
+</body>
+</html>
+
