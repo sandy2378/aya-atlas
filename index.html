@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -22,7 +23,6 @@
         #catalogue { padding: 30px 15px; max-width: 1200px; margin: auto; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
         .book-card { background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border-bottom: 5px solid var(--gold); text-align: center; padding: 25px; }
-        .book-img { width: 100%; height: 180px; object-fit: cover; border-radius: 10px; margin-bottom: 15px; border: 1px solid #eee; }
         
         .btn-pay { background: var(--dark); color: var(--gold); border: 2px solid var(--gold); padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; margin-bottom: 15px; }
         .unlock-zone { background: #fff9f0; padding: 15px; border-radius: 12px; border: 1px solid #ffeeba; margin-top: 15px; }
@@ -38,9 +38,7 @@
 <nav>
     <a href="#accueil">ACCUEIL</a>
     <a href="#catalogue">CATALOGUE</a>
-
-<button onclick="ouvrirAdmin()" style="background:none; border:none; color:#C5A059; cursor:pointer; font-weight:bold;">🛠 ADMIN</button>
-
+    <button onclick="ouvrirAdmin()" style="background:none; border:none; color:#C5A059; cursor:pointer; font-weight:bold; text-transform:uppercase;">🛠 ADMIN</button>
 </nav>
 
 <header id="accueil">
@@ -48,10 +46,7 @@
     <p>Collection Culinaire Numérique</p>
 </header>
 
-
-    <div id="admin" style="display:none;"> 
-   </div>
-
+<div id="admin"> 
     <div style="display:flex; justify-content: space-between;">
         <button class="btn-secours" onclick="copierSauvegarde()">📥 TOUT COPIER (Sauvegarde)</button>
         <button class="btn-secours" onclick="restaurerSauvegarde()">📤 IMPORTER (Restauration)</button>
@@ -64,7 +59,6 @@
         <input type="number" id="pUSD" placeholder="$">
     </div>
     <input type="text" id="pdfLien" placeholder="Lien Google Drive du PDF">
-    
     <button onclick="validerAjout()" style="width:100%; padding:15px; background:var(--gold); color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">AJOUTER AU CATALOGUE</button>
 </div>
 
@@ -82,109 +76,85 @@
 </section>
 
 <script>
-    // TES 22 LIVRES RÉINTÉGRÉS POUR LE DÉMARRAGE
-    
-// EXEMPLE :
-const catalogueInitial = [
-    {
-        "id": 1, 
-        "titre": "Cuisine Mexicaine",
-        "pDT": "3", 
-        "pEUR": "5", 
-        "pUSD": "5",
-        "lien": "https://drive.google.com/file/d/...", // TON LIEN PDF ICI
-        // On récupère le lien, mais s'il est vide, on met une image de remplacement
-let image = document.getElementById('imageLivre').value || 'https://via.placeholder.com/150?text=Pas+d+image';
-
-    },
-    // Ajoute les autres livres à la suite...
-];
-
+    // Initialisation de la base de données
+    const baseDonneesInitiale = []; 
     let bibliotheque = JSON.parse(localStorage.getItem('aya_v5_final')) || baseDonneesInitiale;
     let modeAdmin = false;
 
-     function afficherLivres() {
-    const grille = document.getElementById('maGrille');
-    grille.innerHTML = "";
-    bibliotheque.forEach(livre => {
-        grille.innerHTML += `
-            <div class="book-card">
-                <h3 style="margin-top:0; color:var(--dark);">${livre.titre}</h3>
-                <div class="price-main">${livre.pDT} TND</div>
-                <div class="price-others">${livre.pEUR} € | ${livre.pUSD} $</div>
-                
-                <button class="btn-pay" onclick="ouvrirIban('${livre.titre}')">💳 PAYER LE LIVRE</button>
-                
-                <div class="unlock-zone">
-                    <small>DÉJÀ PAYÉ ? ENTREZ VOTRE CODE :</small>
-                    <input type="text" placeholder="Code ici" oninput="verifierCode(this, 'dl-${livre.id}')" style="text-align:center; margin-top:5px;">
-                    <div id="dl-${livre.id}" style="display:none;">
-                        <a href="${livre.lien}" class="btn-download" target="_blank">📥 TÉLÉCHARGER</a>
+    function afficherLivres() {
+        const grille = document.getElementById('maGrille');
+        grille.innerHTML = "";
+        bibliotheque.forEach(livre => {
+            grille.innerHTML += `
+                <div class="book-card">
+                    <h3 style="margin-top:0; color:var(--dark); text-transform:uppercase;">${livre.titre}</h3>
+                    <div style="font-size:20px; font-weight:bold; color:var(--gold);">${livre.pDT} TND</div>
+                    <div style="font-size:12px; color:#777; margin-bottom:15px;">${livre.pEUR} € | ${livre.pUSD} $</div>
+                    
+                    <button class="btn-pay" onclick="ouvrirIban('${livre.titre}')">💳 PAYER LE LIVRE</button>
+                    
+                    <div class="unlock-zone">
+                        <small>DÉJÀ PAYÉ ? ENTREZ LE CODE :</small>
+                        <input type="text" placeholder="Code ici" oninput="verifierCode(this, 'dl-${livre.id}')" style="text-align:center; margin-top:5px;">
+                        <div id="dl-${livre.id}" style="display:none;">
+                            <a href="${livre.lien}" class="btn-download" target="_blank">📥 TÉLÉCHARGER</a>
+                        </div>
                     </div>
+                    ${modeAdmin ? `<button onclick="supprimer(${livre.id})" style="color:red; background:none; border:none; margin-top:15px; cursor:pointer; text-decoration:underline; font-size:11px;">Supprimer ce livre</button>` : ''}
                 </div>
-                ${modeAdmin ? `<button onclick="supprimer(${livre.id})" style="color:red; background:none; border:none; margin-top:10px; cursor:pointer; text-decoration:underline; font-size:10px;">Supprimer</button>` : ''}
-            </div>
-        `;
-    });
-}
+            `;
+        });
+    }
 
+    function ouvrirAdmin() {
+        let motDePasse = prompt("Mot de passe Admin :");
+        if (motDePasse === "AYA99") { 
+            modeAdmin = true;
+            document.getElementById('admin').style.display = 'block';
+            alert("Accès Admin activé !");
+            afficherLivres();
+        } else {
+            alert("Mot de passe incorrect !");
+        }
+    }
+
+    function verifierCode(input, idBouton) {
+        if(input.value.trim().toUpperCase() === "AYA99") {
+            document.getElementById(idBouton).style.display = 'block';
+            input.style.border = "2px solid #27ae60";
+        } else {
+            document.getElementById(idBouton).style.display = 'none';
+            input.style.border = "1px solid #ccc";
+        }
+    }
+
+    function validerAjout() {
+        const t = document.getElementById('titre').value;
+        const link = document.getElementById('pdfLien').value;
         
-function ouvrirAdmin() {
-    // 1. On demande le mot de passe à l'utilisateur
-    let motDePasse = prompt("Mot de passe Admin :");
+        if(!t || !link) return alert("Le titre et le lien PDF sont obligatoires !");
+       
+        const nouveauLivre = {
+            id: Date.now(),
+            titre: t,
+            pDT: document.getElementById('pDT').value || "0",
+            pEUR: document.getElementById('pEUR').value || "0",
+            pUSD: document.getElementById('pUSD').value || "0",
+            lien: link
+        };
 
-    // 2. C'est ici qu'on vérifie si c'est AYA99
-    if (motDePasse === "AYA99") { 
-        modeAdmin = true;
-        document.getElementById('admin').style.display = 'block'; // Affiche le formulaire
-        alert("Accès Admin activé !");
-        afficherLivres(); // Rafraîchit pour voir les boutons "Supprimer"
-    } else {
-        alert("Mot de passe incorrect !");
+        bibliotheque.push(nouveauLivre);
+        sauvegarder();
+        
+        document.getElementById('titre').value = "";
+        document.getElementById('pdfLien').value = "";
+        document.getElementById('pDT').value = "";
+        document.getElementById('pEUR').value = "";
+        document.getElementById('pUSD').value = "";
+        
+        afficherLivres();
+        alert("Livre ajouté !");
     }
-}
-
-    
-function verifierCode(input, idBouton) {
-    // Si l'utilisateur tape AYA99 (peu importe les majuscules)
-    if(input.value.trim().toUpperCase() === "AYA99") {
-        // On affiche le bouton de téléchargement
-        document.getElementById(idBouton).style.display = 'block';
-        // On met la bordure en vert pour confirmer
-        input.style.border = "2px solid #27ae60";
-    } else {
-        // Sinon on cache le bouton
-        document.getElementById(idBouton).style.display = 'none';
-        input.style.border = "1px solid #ccc";
-    }
-}
-
-    
-function validerAjout() {
-    const t = document.getElementById('titre').value;
-    const link = document.getElementById('pdfLien').value;
-    
-    if(!t || !link) return alert("Le titre et le lien PDF sont obligatoires !");
-   
-    const nouveauLivre = {
-        id: Date.now(),
-        titre: t,
-        pDT: document.getElementById('pDT').value || "0",
-        pEUR: document.getElementById('pEUR').value || "0",
-        pUSD: document.getElementById('pUSD').value || "0",
-        lien: link
-        // On ne met plus d'image ici
-    };
-
-    bibliotheque.push(nouveauLivre);
-    sauvegarder();
-    
-    // On vide les cases
-    document.getElementById('titre').value = "";
-    document.getElementById('pdfLien').value = "";
-    
-    afficherLivres();
-}
 
     function ouvrirIban(titre) {
         document.getElementById('ibanModal').style.display = 'block';
@@ -192,12 +162,19 @@ function validerAjout() {
     }
 
     function sauvegarder() { localStorage.setItem('aya_v5_final', JSON.stringify(bibliotheque)); }
-    function supprimer(id) { if(confirm("Supprimer ce livre ?")) { bibliotheque = bibliotheque.filter(b => b.id !== id); sauvegarder(); afficherLivres(); } }
     
-    // SAUVEGARDE ET RESTAURATION MANUELLE
-    function copierSauvegarde() { navigator.clipboard.writeText(JSON.stringify(bibliotheque)); alert("Code de sauvegarde copié dans le presse-papier !"); }
+    function supprimer(id) { 
+        if(confirm("Supprimer ce livre définitivement ?")) { 
+            bibliotheque = bibliotheque.filter(b => b.id !== id); 
+            sauvegarder(); 
+            afficherLivres(); 
+        } 
+    }
+    
+    function copierSauvegarde() { navigator.clipboard.writeText(JSON.stringify(bibliotheque)); alert("Code copié !"); }
+    
     function restaurerSauvegarde() {
-        const data = prompt("Collez le code de sauvegarde ici :");
+        const data = prompt("Collez votre code ici :");
         if(data) {
             try { bibliotheque = JSON.parse(data); sauvegarder(); afficherLivres(); } catch(e) { alert("Code invalide !"); }
         }
