@@ -97,10 +97,9 @@ let bibliotheque = JSON.parse(localStorage.getItem('aya_v5_final')) || [{"id":17
     
     let modeAdmin = false;
 
-    // Le code change tous les jours (Ex: 0802 pour le 8 Février)
+    // Remplacez 'VOTRE_CODE' par le code secret de votre choix (ex: 'AYA99')
     function obtenirCodeDuJour() {
-        const d = new Date();
-        return String(d.getDate()).padStart(2, '0') + String(d.getMonth() + 1).padStart(2, '0');
+        return "VOTRE_CODE"; 
     }
 
     function ouvrirAdmin() {
@@ -235,6 +234,7 @@ let bibliotheque = JSON.parse(localStorage.getItem('aya_v5_final')) || [{"id":17
 </script>
 </body>
 </html>
+
 
 
 
