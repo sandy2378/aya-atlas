@@ -103,31 +103,31 @@ let image = document.getElementById('imageLivre').value || 'https://via.placehol
     let bibliotheque = JSON.parse(localStorage.getItem('aya_v5_final')) || baseDonneesInitiale;
     let modeAdmin = false;
 
-    function afficherLivres() {
-        const grille = document.getElementById('maGrille');
-        grille.innerHTML = "";
-        bibliotheque.forEach(livre => {
-            const imgUrl = (livre.image && livre.image.startsWith('http')) ? livre.image : "https://via.placeholder.com/400x300?text=Aya+Atlas";
-            grille.innerHTML += `
-                <div class="book-card">
-                    <img src="${imgUrl}" class="book-img">
-                    <h3>${livre.titre}</h3>
-                    <div style="font-size:22px; font-weight:700;">${livre.pDT} TND</div>
-                    <div style="color:var(--gold); margin-bottom:15px;">${livre.pEUR} € | ${livre.pUSD} $</div>
-                    <button class="btn-pay" onclick="ouvrirIban('${livre.titre}')">💳 PAYER LE LIVRE</button>
-                    <div class="unlock-zone">
-                        <small>DÉJÀ PAYÉ ? ENTREZ VOTRE CODE :</small>
-                        <input type="text" placeholder="Entrez le code" oninput="verifierCode(this, 'dl-${livre.id}')" style="text-align:center;">
-                        <div id="dl-${livre.id}" style="display:none;">
-                            <a href="${livre.lien}" class="btn-download" target="_blank">📥 TÉLÉCHARGER PDF</a>
-                        </div>
+     function afficherLivres() {
+    const grille = document.getElementById('maGrille');
+    grille.innerHTML = "";
+    bibliotheque.forEach(livre => {
+        grille.innerHTML += `
+            <div class="book-card">
+                <h3 style="margin-top:0; color:var(--dark);">${livre.titre}</h3>
+                <div class="price-main">${livre.pDT} TND</div>
+                <div class="price-others">${livre.pEUR} € | ${livre.pUSD} $</div>
+                
+                <button class="btn-pay" onclick="ouvrirIban('${livre.titre}')">💳 PAYER LE LIVRE</button>
+                
+                <div class="unlock-zone">
+                    <small>DÉJÀ PAYÉ ? ENTREZ VOTRE CODE :</small>
+                    <input type="text" placeholder="Code ici" oninput="verifierCode(this, 'dl-${livre.id}')" style="text-align:center; margin-top:5px;">
+                    <div id="dl-${livre.id}" style="display:none;">
+                        <a href="${livre.lien}" class="btn-download" target="_blank">📥 TÉLÉCHARGER</a>
                     </div>
-                    ${modeAdmin ? `<button onclick="supprimer(${livre.id})" style="color:red; background:none; border:none; margin-top:15px; cursor:pointer; text-decoration:underline;">Supprimer ce livre</button>` : ''}
-                </div>`;
-        });
-    }
+                </div>
+                ${modeAdmin ? `<button onclick="supprimer(${livre.id})" style="color:red; background:none; border:none; margin-top:10px; cursor:pointer; text-decoration:underline; font-size:10px;">Supprimer</button>` : ''}
+            </div>
+        `;
+    });
+}
 
-    
         
 function ouvrirAdmin() {
     // 1. On demande le mot de passe à l'utilisateur
@@ -159,22 +159,32 @@ function verifierCode(input, idBouton) {
     }
 }
 
-    function validerAjout() {
-        const t = document.getElementById('titre').value;
-        const link = document.getElementById('pdfLien').value;
-        if(!t || !link) return alert("Titre et lien PDF obligatoires !");
-        bibliotheque.push({
-            id: Date.now(),
-            titre: t,
-            pDT: document.getElementById('pDT').value || "0",
-            pEUR: document.getElementById('pEUR').value || "0",
-            pUSD: document.getElementById('pUSD').value || "0",
-            lien: link,
-            image: document.getElementById('imgLien').value || ""
-        });
-        sauvegarder();
-        afficherLivres();
-    }
+    
+function validerAjout() {
+    const t = document.getElementById('titre').value;
+    const link = document.getElementById('pdfLien').value;
+    
+    if(!t || !link) return alert("Le titre et le lien PDF sont obligatoires !");
+   
+    const nouveauLivre = {
+        id: Date.now(),
+        titre: t,
+        pDT: document.getElementById('pDT').value || "0",
+        pEUR: document.getElementById('pEUR').value || "0",
+        pUSD: document.getElementById('pUSD').value || "0",
+        lien: link
+        // On ne met plus d'image ici
+    };
+
+    bibliotheque.push(nouveauLivre);
+    sauvegarder();
+    
+    // On vide les cases
+    document.getElementById('titre').value = "";
+    document.getElementById('pdfLien').value = "";
+    
+    afficherLivres();
+}
 
     function ouvrirIban(titre) {
         document.getElementById('ibanModal').style.display = 'block';
@@ -198,6 +208,7 @@ function verifierCode(input, idBouton) {
 
 </body>
 </html>
+
 
 
 
