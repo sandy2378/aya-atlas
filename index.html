@@ -38,7 +38,9 @@
 <nav>
     <a href="#accueil">ACCUEIL</a>
     <a href="#catalogue">CATALOGUE</a>
-    <a onclick="ouvrirAdmin()">🛠 ADMIN</a>
+    
+    <a onclick="ouvrirAdmin()" style="cursor:pointer;">🛠 ADMIN</a>
+
 </nav>
 
 <header id="accueil">
@@ -46,7 +48,10 @@
     <p>Collection Culinaire Numérique</p>
 </header>
 
-<div id="admin">
+
+    <div id="admin" style="display:none;"> 
+   </div>
+
     <div style="display:flex; justify-content: space-between;">
         <button class="btn-secours" onclick="copierSauvegarde()">📥 TOUT COPIER (Sauvegarde)</button>
         <button class="btn-secours" onclick="restaurerSauvegarde()">📤 IMPORTER (Restauration)</button>
@@ -120,12 +125,20 @@ const catalogueInitial = [
         });
     }
 
-    function ouvrirAdmin() {
-        if(prompt("Mot de passe Admin :") === "AYA2026") {
-            modeAdmin = true;
-            document.getElementById('admin').style.display = 'block';
-            afficherLivres();
-        }
+    
+        function ouvrirAdmin() {
+    // Une boîte s'affiche pour demander le mot de passe
+    let motDePasse = prompt("Entrez le mot de passe Admin :");
+    
+    if (motDePasse === "AYA2026") {
+        // Si c'est juste, on montre le panneau
+        document.getElementById('admin').style.display = 'block';
+        alert("Accès autorisé");
+    } else {
+        alert("Mot de passe incorrect");
+    }
+}
+
     
 function verifierCode(input, idBouton) {
     // Si l'utilisateur tape AYA99 (peu importe les majuscules)
@@ -180,4 +193,5 @@ function verifierCode(input, idBouton) {
 
 </body>
 </html>
+
 
