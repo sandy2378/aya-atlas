@@ -64,7 +64,7 @@
         <input type="number" id="pUSD" placeholder="$">
     </div>
     <input type="text" id="pdfLien" placeholder="Lien Google Drive du PDF">
-    <input type="text" id="imgLien" placeholder="Lien de l'image (URL)">
+    
     <button onclick="validerAjout()" style="width:100%; padding:15px; background:var(--gold); color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">AJOUTER AU CATALOGUE</button>
 </div>
 
@@ -93,7 +93,9 @@ const catalogueInitial = [
         "pEUR": "5", 
         "pUSD": "5",
         "lien": "https://drive.google.com/file/d/...", // TON LIEN PDF ICI
-        "image": "https://images.unsplash.com/..."    // TON LIEN IMAGE ICI
+        // On récupère le lien, mais s'il est vide, on met une image de remplacement
+let image = document.getElementById('imageLivre').value || 'https://via.placeholder.com/150?text=Pas+d+image';
+
     },
     // Ajoute les autres livres à la suite...
 ];
@@ -196,6 +198,7 @@ function verifierCode(input, idBouton) {
 
 </body>
 </html>
+
 
 
 
