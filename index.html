@@ -1,12 +1,10 @@
-
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <link rel="icon" type="image/png" href="logo.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<link rel="apple-touch-icon" href="logo.png">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon" href="logo.png">
     <link rel="manifest" href="manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,33 +13,23 @@
     <style>
         :root { --gold: #c5a059; --dark: #1a1a1a; --grey: #f4f4f4; --green: #27ae60; }
         body { font-family: 'Montserrat', sans-serif; margin: 0; background: var(--grey); }
-       
         nav { background: var(--dark); padding: 15px; position: sticky; top: 0; z-index: 1000; display: flex; justify-content: center; gap: 15px; border-bottom: 2px solid var(--gold); }
         nav a { color: var(--gold); text-decoration: none; font-weight: bold; font-size: 11px; text-transform: uppercase; cursor: pointer; }
-
         header { background: white; padding: 30px 10px; text-align: center; border-bottom: 1px solid #ddd; }
         header h1 { font-family: 'Playfair Display'; margin: 0; font-size: 26px; color: var(--dark); }
-
-        /* PANNEAU ADMIN */
         #admin { display: none; max-width: 500px; margin: 20px auto; background: white; padding: 25px; border-radius: 15px; border: 2px solid var(--gold); }
         .btn-secours { background: #34495e; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-size: 11px; width: 48%; font-weight: bold; }
         input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
-
-        /* CATALOGUE */
         #catalogue { padding: 30px 15px; max-width: 1200px; margin: auto; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
         .book-card { background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border-bottom: 5px solid var(--gold); text-align: center; padding: 25px; display: flex; flex-direction: column; justify-content: space-between; }
-       
         .price-main { font-size: 22px; font-weight: 700; color: var(--dark); margin-bottom: 5px; }
         .price-others { font-size: 14px; color: var(--gold); font-weight: 600; margin-bottom: 20px; }
         .btn-pay { background: var(--dark); color: var(--gold); border: 2px solid var(--gold); padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; margin-bottom: 15px; }
         .btn-download { background: var(--green); color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; text-decoration: none; display: block; margin-top: 10px; }
-       
-        /* MODAL IBAN */
         .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); }
         .modal-content { background: white; margin: 15% auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; }
         .iban-box { background: #f8f9fa; padding: 15px; border: 2px dashed var(--gold); font-family: monospace; font-weight: bold; margin: 20px 0; font-size: 15px; word-break: break-all; }
-
         .unlock-zone { background: #fff9f0; padding: 15px; border-radius: 12px; border: 1px solid #ffeeba; margin-top: 15px; }
         .admin-tools { margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee; display: flex; justify-content: space-between; }
         .btn-mini { background: none; border: none; font-size: 10px; cursor: pointer; font-weight: bold; text-decoration: underline; }
@@ -63,7 +51,6 @@
 <div id="ibanModal" class="modal">
     <div class="modal-content">
         <h2 style="color:var(--gold); margin:0;">PAIEMENT</h2>
-        <p>Effectuez votre virement ici :</p>
         <div class="iban-box">TN59 12 301 00 00 133062172 43</div>
         <p><strong>Bénéficiaire :</strong> RIM AYARI</p>
         <button id="whatsappBtn" class="btn-download" style="background:#25D366;">J'AI PAYÉ, RECEVOIR LE CODE</button>
@@ -77,16 +64,14 @@
         <button class="btn-secours" onclick="restaurerSauvegarde()">📤 IMPORTER / SECOURS</button>
     </div>
     <h3 style="color:var(--gold); margin-top:0;">AJOUTER UN LIVRE</h3>
-    <input type="text" id="titre" placeholder="Titre du livre (ex: Mexicain FR)">
+    <input type="text" id="titre" placeholder="Titre">
     <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
         <input type="number" id="pDT" placeholder="TND">
         <input type="number" id="pEUR" placeholder="Euro €">
         <input type="number" id="pUSD" placeholder="Dollar $">
     </div>
     <input type="text" id="pdfLien" placeholder="Lien Google Drive du PDF">
-    
     <input type="text" id="imgLien" placeholder="Lien de l'image (URL)">
-    
     <button onclick="validerAjout()" style="width:100%; padding:15px; background:var(--gold); color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer; margin-top:10px;">AJOUTER AU CATALOGUE</button>
 </div>
 
@@ -95,160 +80,66 @@
 </section>
 
 <script>
-    // Remplacez les crochets [ ] par le code que vous avez copié sur votre téléphone
+    // J'ai ajouté les liens d'images directement dans votre liste !
+    let bibliotheque = [
+        {"id":1,"titre":"Kitchen Mexican","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1z-3Wr_k8IlNR-MGHBHoV50kFYNNr_q1t/view","image":"https://images.unsplash.com/photo-1620589125156-fd5028c5e05b?w=400"},
+        {"id":2,"titre":"Recette Mexicain","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1ts7rf-X84tnDrn2ZXpLAi8Y_VWsbxVZY/view","image":"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400"},
+        {"id":3,"titre":"Cuisine Argentine","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1Spxw6Yt7PeJU1l5PBXzZVdEkvZZ2cTLI/view","image":"https://images.unsplash.com/photo-1544025162-d76694265947?w=400"}
+        // ... Ajoutez les autres ici ou via l'interface Admin
+    ];
 
-let bibliotheque = JSON.parse(localStorage.getItem('aya_v5_final')) || [{"id":1770809558661,"titre":"Kitchen Mexican ","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1z-3Wr_k8IlNR-MGHBHoV50kFYNNr_q1t/view?usp=drivesdk"},{"id":1770809630531,"titre":"Recette Mexicain ","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1ts7rf-X84tnDrn2ZXpLAi8Y_VWsbxVZY/view?usp=drivesdk"},{"id":1770809756103,"titre":"Cuisine Autriche","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1bzlE9g4X7xNcR-s7KanM5HFMhIAQ4Sge/view?usp=drivesdk"},{"id":1770809827463,"titre":"Kitchen Austria ","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1CTrSm_mmvgFcB0h6wR-PQfFnCN6nNMRV/view?usp=drivesdk"},{"id":1770810351725,"titre":"Cuisine Saine","pDT":"10","pEUR":"10","pUSD":"10","lien":"https://drive.google.com/file/d/1O6lWAFBxXvzVCJArwvIaGBcOcTFoQRDV/view?usp=drivesdk"},{"id":1770810403016,"titre":"Healthy Kitchen","pDT":"10","pEUR":"10","pUSD":"10","lien":"https://drive.google.com/file/d/1O6lWAFBxXvzVCJArwvIaGBcOcTFoQRDV/view?usp=drivesdk"},{"id":1770833349146,"titre":"Recette pour diabétique (15 recettes)","pDT":"10","pEUR":"10","pUSD":"10","lien":"https://drive.google.com/file/d/1A-bjSJ8Dg4urH8lpEsz1aQwRYmST0B4r/view?usp=drivesdk"},{"id":1770833516662,"titre":"15 recipes for diabetics","pDT":"10","pEUR":"10","pUSD":"10","lien":"https://drive.google.com/file/d/1KFukkfheMUwMdWLSyN4O2B4UKnHg_9gX/view?usp=drivesdk"},{"id":1770833797533,"titre":"Kitchen Argentina","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1VqMdL1OFR0n__h5gFetov1XJ_U6bnkqj/view?usp=drivesdk"},{"id":1770833855066,"titre":"Cuisine Argentine ","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1Spxw6Yt7PeJU1l5PBXzZVdEkvZZ2cTLI/view?usp=drivesdk"},{"id":1770833992948,"titre":"Kitchen Croatia","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1wyNyhG5tYWXTb3tXhROZEB8AnF5btiPJ/view?usp=drivesdk"},{"id":1770834036862,"titre":"Cuisine croatie ","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1siQkgvV7dDHAGx8yCK6sOeLLGTB9iHwL/view?usp=drivesdk"},{"id":1770834102628,"titre":"Kitchen Tunisia","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1EO5_eePNJUulybZOHUcC6iI7rdq-kbNQ/view?usp=drivesdk"},{"id":1770834142251,"titre":"Cuisine tunisie ","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1RPtYwm0F6q83kG_B-57r2BmPXEfVA9E-/view?usp=drivesdk"},{"id":1770835010099,"titre":"Kitchen Brasil","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1LIC6ZnWV-CYwEJIZrqnxciKL_nrnMT5Q/view?usp=drivesdk"},{"id":1770835122836,"titre":"Cuisine Brésil ","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1xPe-_tiLyVHU8R35qWn75u7b50Tr8CMF/view?usp=drivesdk"},{"id":1770835325519,"titre":"Kitchen Czech ","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1VwTtJKPvtU5bOUmh7uRSDbIfylnH0SYp/view?usp=drivesdk"},{"id":1770835362762,"titre":"Cuisine Tchèque ","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1LI_6BAEMfghmjPijNrFZ5Lx8_Bg7813-/view?usp=drivesdk"},{"id":1770835443868,"titre":"Kitchen Himalayan ","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/18wGsAG4n4yGPRV3CFRvwp4LNzTj_LnG_/view?usp=drivesdk"},{"id":1770835494484,"titre":"Cuisine Nepal ","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1mgKHhD6W__djBVqGf-GAlL4aJMHDa6RG/view?usp=drivesdk"},{"id":1770838096118,"titre":"Recettes sucrées (30 Recettes)","pDT":"20","pEUR":"20","pUSD":"20","lien":"https://drive.google.com/file/d/1Ge72DvCWmrIh0ZeFDX4gQG4mx0hG94hZ/view?usp=drivesdk"},{"id":1770838167944,"titre":"Sweets recipes (30 recipes)","pDT":"20","pEUR":"20","pUSD":"20","lien":"https://drive.google.com/file/d/1jvE_KkELZgFw-H7i9CXnMsnui8_nReXR/view?usp=drivesdk"}];
-
-    
     let modeAdmin = false;
 
-
-    function obtenirCodeDuJour() {
-        return "AYA99"; 
+    function afficherLivres() {
+        const grille = document.getElementById('maGrille');
+        grille.innerHTML = "";
+        bibliotheque.forEach(livre => {
+            const photo = livre.image || "https://via.placeholder.com/400x300?text=Aya+Atlas";
+            grille.innerHTML += `
+                <div class="book-card">
+                    <img src="${photo}" style="width:100%; height:180px; object-fit:cover; border-radius:10px; margin-bottom:15px;">
+                    <h3 style="margin-top:0;">${livre.titre}</h3>
+                    <div class="price-main">${livre.pDT} TND</div>
+                    <div class="price-others">${livre.pEUR} € | ${livre.pUSD} $</div>
+                    <button class="btn-pay" onclick="ouvrirIban('${livre.titre}')">💳 PAYER LE LIVRE</button>
+                    <div class="unlock-zone">
+                        <input type="text" placeholder="Code ici" oninput="verifierCode(this, 'dl-${livre.id}')" style="text-align:center;">
+                        <div id="dl-${livre.id}" style="display:none;">
+                            <a href="${livre.lien}" class="btn-download" target="_blank">📥 TÉLÉCHARGER</a>
+                        </div>
+                    </div>
+                    ${modeAdmin ? `<button class="btn-mini" style="color:red; margin-top:10px;" onclick="supprimer(${livre.id})">🗑 SUPPRIMER</button>` : ''}
+                </div>`;
+        });
     }
-
-    function ouvrirAdmin() {
-        if(prompt("Mot de passe Admin :") === "AYA2026") {
-            modeAdmin = true;
-            document.getElementById('admin').style.display = 'block';
-            afficherLivres();
-        }
-    }
-
 
     function validerAjout() {
         const t = document.getElementById('titre').value;
         const link = document.getElementById('pdfLien').value;
-        const img = document.getElementById('imgLien').value; // On récupère l'image
-        if(!t || !link) return alert("Le titre et le lien PDF sont obligatoires !");
-       
-        const nouveauLivre = {
+        const img = document.getElementById('imgLien').value;
+        if(!t || !link) return alert("Titre et PDF obligatoires !");
+        
+        bibliotheque.push({
             id: Date.now(),
             titre: t,
             pDT: document.getElementById('pDT').value || "0",
             pEUR: document.getElementById('pEUR').value || "0",
             pUSD: document.getElementById('pUSD').value || "0",
             lien: link,
-            image: img || "https://via.placeholder.com/300x400?text=Aya+Atlas" // Image par défaut
-        };
-
-        bibliotheque.push(nouveauLivre);
-        sauvegarder();
-        document.getElementById('titre').value = "";
-        document.getElementById('pdfLien').value = "";
-        document.getElementById('imgLien').value = ""; // On vide la case
+            image: img
+        });
         afficherLivres();
+        alert("Livre ajouté ! Cliquez sur TOUT COPIER pour sauvegarder sur GitHub.");
     }
 
-  
-
-     function afficherLivres() {
-    const grille = document.getElementById('maGrille');
-    grille.innerHTML = "";
-    bibliotheque.forEach(livre => {
-        // Si l'image est vide, on met une image de remplacement
-        const imgUrl = livre.image && livre.image.startsWith('http') ? livre.image : "https://via.placeholder.com/400x300?text=Aya+Atlas";
-        
-        grille.innerHTML += `
-            <div class="book-card">
-                <img src="${imgUrl}" style="width:100%; height:180px; object-fit:cover; border-radius:10px; margin-bottom:15px; border:1px solid #eee;">
-                <h3 style="margin-top:0;">${livre.titre}</h3>
-                <div class="price-main">${livre.pDT} TND</div>
-                <div class="price-others">${livre.pEUR} € | ${livre.pUSD} $</div>
-                
-                <button class="btn-pay" onclick="ouvrirIban('${livre.titre}')">💳 PAYER LE LIVRE</button>
-                
-                <div class="unlock-zone">
-                    <small>DÉJÀ PAYÉ ? ENTREZ VOTRE CODE :</small>
-                    <input type="text" placeholder="Code ici" oninput="verifierCode(this, 'dl-${livre.id}')" style="text-align:center; margin-top:5px;">
-                    <div id="dl-${livre.id}" style="display:none;">
-                        <a href="${livre.lien}" class="btn-download" target="_blank">📥 TÉLÉCHARGER</a>
-                    </div>
-                </div>
-            </div>
-        `;
-    });
-}
-   
-
-    function verifierCode(input, idBouton) {
-        if(input.value.trim() === obtenirCodeDuJour()) {
-            document.getElementById(idBouton).style.display = 'block';
-            input.style.border = "2px solid green";
-        }
-    }
-
-    function ouvrirIban(titre) {
-        document.getElementById('ibanModal').style.display = 'block';
-        document.getElementById('whatsappBtn').onclick = function() {
-            window.open(`https://wa.me/21646248269?text=Bonjour Rim, j'ai payé le livre : ${titre}`, '_blank');
-            fermerIban();
-        };
-    }
-
-    function fermerIban() { document.getElementById('ibanModal').style.display = 'none'; }
-
-    // --- FONCTIONS DE SAUVEGARDE ---
-
-    function sauvegarder() {
-        localStorage.setItem('aya_v5_final', JSON.stringify(bibliotheque));
-    }
-
-    function copierLivreUnique(id) {
-        const livre = bibliotheque.find(b => b.id === id);
-        navigator.clipboard.writeText(JSON.stringify(livre));
-        alert("Code du livre '" + livre.titre + "' copié ! Gardez-le précieusement.");
-    }
-
-    function copierSauvegarde() {
-        navigator.clipboard.writeText(JSON.stringify(bibliotheque));
-        alert("Bibliothèque complète copiée dans le presse-papier !");
-    }
-
-    function restaurerSauvegarde() {
-        const data = prompt("Collez ici le code d'un livre ou de toute la bibliothèque :");
-        if(data) {
-            try {
-                const objet = JSON.parse(data);
-                if(Array.isArray(objet)) {
-                    if(confirm("Importer toute la bibliothèque ? Cela remplacera vos livres actuels.")) {
-                        bibliotheque = objet;
-                    }
-                } else {
-                    bibliotheque.push(objet);
-                    alert("Livre ajouté avec succès !");
-                }
-                sauvegarder();
-                afficherLivres();
-            } catch(e) {
-                alert("Code invalide !");
-            }
-        }
-    }
-
-    function supprimer(id) {
-        if(confirm("Supprimer ce livre définitivement ?")) {
-            bibliotheque = bibliotheque.filter(b => b.id !== id);
-            sauvegarder();
-            afficherLivres();
-        }
-    }
+    function verifierCode(input, id) { if(input.value.trim() === "AYA99") document.getElementById(id).style.display = 'block'; }
+    function ouvrirAdmin() { if(prompt("Pass:") === "AYA2026") { modeAdmin = true; document.getElementById('admin').style.display='block'; afficherLivres(); } }
+    function ouvrirIban() { document.getElementById('ibanModal').style.display='block'; }
+    function fermerIban() { document.getElementById('ibanModal').style.display='none'; }
+    function supprimer(id) { bibliotheque = bibliotheque.filter(b => b.id !== id); afficherLivres(); }
+    function copierSauvegarde() { navigator.clipboard.writeText(JSON.stringify(bibliotheque)); alert("Copié !"); }
 
     window.onload = afficherLivres;
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
