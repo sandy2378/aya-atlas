@@ -38,8 +38,8 @@
 <nav>
     <a href="#accueil">ACCUEIL</a>
     <a href="#catalogue">CATALOGUE</a>
-    
-    <a onclick="ouvrirAdmin()" style="cursor:pointer;">🛠 ADMIN</a>
+
+<button onclick="ouvrirAdmin()" style="background:none; border:none; color:#C5A059; cursor:pointer; font-weight:bold;">🛠 ADMIN</button>
 
 </nav>
 
@@ -126,16 +126,19 @@ const catalogueInitial = [
     }
 
     
-        function ouvrirAdmin() {
-    // Une boîte s'affiche pour demander le mot de passe
-    let motDePasse = prompt("Entrez le mot de passe Admin :");
-    
-    if (motDePasse === "AYA2026") {
-        // Si c'est juste, on montre le panneau
-        document.getElementById('admin').style.display = 'block';
-        alert("Accès autorisé");
+        
+function ouvrirAdmin() {
+    // 1. On demande le mot de passe à l'utilisateur
+    let motDePasse = prompt("Mot de passe Admin :");
+
+    // 2. C'est ici qu'on vérifie si c'est AYA99
+    if (motDePasse === "AYA99") { 
+        modeAdmin = true;
+        document.getElementById('admin').style.display = 'block'; // Affiche le formulaire
+        alert("Accès Admin activé !");
+        afficherLivres(); // Rafraîchit pour voir les boutons "Supprimer"
     } else {
-        alert("Mot de passe incorrect");
+        alert("Mot de passe incorrect !");
     }
 }
 
@@ -193,5 +196,6 @@ function verifierCode(input, idBouton) {
 
 </body>
 </html>
+
 
 
