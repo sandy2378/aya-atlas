@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <link rel="icon" type="image/png" href="logo.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon" href="logo.png">
+    <link rel="manifest" href="manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aya - L'Atlas des Saveurs</title>
@@ -17,8 +22,7 @@
         input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
         #catalogue { padding: 30px 15px; max-width: 1200px; margin: auto; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-        .book-card { background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border-bottom: 5px solid var(--gold); text-align: center; padding: 25px; }
-        .book-img { width: 100%; height: 180px; object-fit: cover; border-radius: 10px; margin-bottom: 15px; }
+        .book-card { background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border-bottom: 5px solid var(--gold); text-align: center; padding: 25px; display: flex; flex-direction: column; justify-content: space-between; }
         .price-main { font-size: 22px; font-weight: 700; color: var(--dark); margin-bottom: 5px; }
         .price-others { font-size: 14px; color: var(--gold); font-weight: 600; margin-bottom: 20px; }
         .btn-pay { background: var(--dark); color: var(--gold); border: 2px solid var(--gold); padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; margin-bottom: 15px; }
@@ -27,7 +31,6 @@
         .modal-content { background: white; margin: 15% auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; }
         .iban-box { background: #f8f9fa; padding: 15px; border: 2px dashed var(--gold); font-family: monospace; font-weight: bold; margin: 20px 0; font-size: 15px; word-break: break-all; }
         .unlock-zone { background: #fff9f0; padding: 15px; border-radius: 12px; border: 1px solid #ffeeba; margin-top: 15px; }
-        .admin-tools { margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee; display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
@@ -56,17 +59,17 @@
 <div id="admin">
     <div style="display:flex; justify-content: space-between; margin-bottom:15px;">
         <button class="btn-secours" onclick="copierSauvegarde()">📥 TOUT COPIER</button>
-        <button class="btn-secours" onclick="restaurerSauvegarde()">📤 IMPORTER</button>
+        <button class="btn-secours" onclick="restaurerSauvegarde()">📤 IMPORTER / SECOURS</button>
     </div>
-    <h3>AJOUTER UN LIVRE</h3>
-    <input type="text" id="titre" placeholder="Titre du livre">
+    <h3 style="color:var(--gold); margin-top:0;">AJOUTER UN LIVRE</h3>
+    <input type="text" id="titre" placeholder="Titre">
     <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
         <input type="number" id="pDT" placeholder="TND">
         <input type="number" id="pEUR" placeholder="€">
         <input type="number" id="pUSD" placeholder="$">
     </div>
-    <input type="text" id="pdfLien" placeholder="Lien Google Drive du PDF">
-    <input type="text" id="imgLien" placeholder="Lien de l'image (URL)">
+    <input type="text" id="pdfLien" placeholder="Lien PDF">
+    <input type="text" id="imgLien" placeholder="Lien Image (URL)">
     <button onclick="validerAjout()" style="width:100%; padding:15px; background:var(--gold); color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer; margin-top:10px;">AJOUTER AU CATALOGUE</button>
 </div>
 
@@ -75,36 +78,20 @@
 </section>
 
 <script>
-    // Chargement des livres depuis la mémoire du téléphone
-    let bibliotheque = JSON.parse(localStorage.getItem('aya_v5_final')) || [];
+    let bibliotheque = JSON.parse(localStorage.getItem('aya_v5_final')) || [
+        {"id":1770809558661,"titre":"Kitchen Mexican ","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1z-3Wr_k8IlNR-MGHBHoV50kFYNNr_q1t/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1620589125156-fd5028c5e05b?w=400"},
+        {"id":1770809630531,"titre":"Recette Mexicain ","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1ts7rf-X84tnDrn2ZXpLAi8Y_VWsbxVZY/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400"}
+        // Tes 22 livres sont conservés dans ton localStorage
+    ];
+
     let modeAdmin = false;
 
-    function afficherLivres() {
-        const grille = document.getElementById('maGrille');
-        grille.innerHTML = "";
-        bibliotheque.forEach(livre => {
-            const photoUrl = livre.image || "https://via.placeholder.com/400x300?text=Aya+Atlas";
-            grille.innerHTML += `
-                <div class="book-card">
-                    <img src="${photoUrl}" class="book-img">
-                    <h3>${livre.titre}</h3>
-                    <div class="price-main">${livre.pDT} TND</div>
-                    <div class="price-others">${livre.pEUR} € | ${livre.pUSD} $</div>
-                    <button class="btn-pay" onclick="ouvrirIban('${livre.titre}')">💳 PAYER LE LIVRE</button>
-                    <div class="unlock-zone">
-                        <small>CODE REÇU ?</small>
-                        <input type="text" placeholder="Entrez le code" oninput="verifierCode(this, 'dl-${livre.id}')" style="text-align:center;">
-                        <div id="dl-${livre.id}" style="display:none;">
-                            <a href="${livre.lien}" class="btn-download" target="_blank">📥 TÉLÉCHARGER</a>
-                        </div>
-                    </div>
-                    ${modeAdmin ? `
-                        <div class="admin-tools">
-                            <button onclick="supprimer(${livre.id})" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold; text-decoration:underline;">🗑 SUPPRIMER</button>
-                        </div>
-                    ` : ''}
-                </div>`;
-        });
+    function ouvrirAdmin() {
+        if(prompt("Mot de passe Admin :") === "AYA2026") {
+            modeAdmin = true;
+            document.getElementById('admin').style.display = 'block';
+            afficherLivres();
+        }
     }
 
     function validerAjout() {
@@ -112,42 +99,56 @@
         const link = document.getElementById('pdfLien').value;
         const img = document.getElementById('imgLien').value;
         if(!t || !link) return alert("Titre et PDF obligatoires !");
-        
-        const nouveau = {
+        const nouveauLivre = {
             id: Date.now(),
             titre: t,
             pDT: document.getElementById('pDT').value || "0",
             pEUR: document.getElementById('pEUR').value || "0",
             pUSD: document.getElementById('pUSD').value || "0",
             lien: link,
-            image: img
+            image: img || "https://via.placeholder.com/400x300?text=Aya+Atlas"
         };
-        bibliotheque.push(nouveau);
+        bibliotheque.push(nouveauLivre);
         sauvegarder();
         afficherLivres();
-        // Vider les cases
-        document.getElementById('titre').value = "";
-        document.getElementById('pdfLien').value = "";
-        document.getElementById('imgLien').value = "";
     }
 
-    function supprimer(id) {
-        if(confirm("Supprimer ce livre ?")) {
-            bibliotheque = bibliotheque.filter(b => b.id !== id);
-            sauvegarder();
-            afficherLivres();
-        }
+    function afficherLivres() {
+        const grille = document.getElementById('maGrille');
+        grille.innerHTML = "";
+        bibliotheque.forEach(livre => {
+            const imgUrl = livre.image && livre.image.startsWith('http') ? livre.image : "https://via.placeholder.com/400x300?text=Aya+Atlas";
+            grille.innerHTML += `
+                <div class="book-card">
+                    <img src="${imgUrl}" style="width:100%; height:180px; object-fit:cover; border-radius:10px; margin-bottom:15px; border:1px solid #eee;">
+                    <h3 style="margin-top:0;">${livre.titre}</h3>
+                    <div class="price-main">${livre.pDT} TND</div>
+                    <div class="price-others">${livre.pEUR} € | ${livre.pUSD} $</div>
+                    <button class="btn-pay" onclick="ouvrirIban('${livre.titre}')">💳 PAYER LE LIVRE</button>
+                    <div class="unlock-zone">
+                        <small>CODE REÇU ?</small>
+                        <input type="text" placeholder="Code ici" oninput="verifierCode(this, 'dl-${livre.id}')" style="text-align:center; margin-top:5px;">
+                        <div id="dl-${livre.id}" style="display:none;">
+                            <a href="${livre.lien}" class="btn-download" target="_blank">📥 TÉLÉCHARGER</a>
+                        </div>
+                    </div>
+                    ${modeAdmin ? `<button onclick="supprimer(${livre.id})" style="color:red; margin-top:10px; cursor:pointer; background:none; border:none; text-decoration:underline; font-size:10px;">🗑 SUPPRIMER</button>` : ''}
+                </div>`;
+        });
     }
 
-    function sauvegarder() { localStorage.setItem('aya_v5_final', JSON.stringify(bibliotheque)); }
     function verifierCode(input, id) { if(input.value.trim() === "AYA99") document.getElementById(id).style.display = 'block'; }
-    function ouvrirAdmin() { if(prompt("Pass:") === "AYA2026") { modeAdmin = true; document.getElementById('admin').style.display='block'; afficherLivres(); } }
-    function ouvrirIban(t) { document.getElementById('ibanModal').style.display='block'; }
-    function fermerIban() { document.getElementById('ibanModal').style.display='none'; }
-    function copierSauvegarde() { navigator.clipboard.writeText(JSON.stringify(bibliotheque)); alert("Code copié !"); }
-    function restaurerSauvegarde() {
-        const data = prompt("Collez le code ici :");
-        if(data) { bibliotheque = JSON.parse(data); sauvegarder(); afficherLivres(); }
+    function ouvrirIban(titre) {
+        document.getElementById('ibanModal').style.display = 'block';
+        document.getElementById('whatsappBtn').onclick = () => window.open(`https://wa.me/21646248269?text=J'ai payé : ${titre}`, '_blank');
+    }
+    function fermerIban() { document.getElementById('ibanModal').style.display = 'none'; }
+    function sauvegarder() { localStorage.setItem('aya_v5_final', JSON.stringify(bibliotheque)); }
+    function supprimer(id) { if(confirm("Supprimer ?")) { bibliotheque = bibliotheque.filter(b => b.id !== id); sauvegarder(); afficherLivres(); } }
+    function copierSauvegarde() { navigator.clipboard.writeText(JSON.stringify(bibliotheque)); alert("Copié !"); }
+    function restaurerSauvegarde() { 
+        const data = prompt("Collez le code :"); 
+        if(data) { bibliotheque = JSON.parse(data); sauvegarder(); afficherLivres(); } 
     }
 
     window.onload = afficherLivres;
