@@ -142,12 +142,13 @@ let bibliotheque = JSON.parse(localStorage.getItem('aya_v5_final')) || [{"id":17
         const grille = document.getElementById('maGrille');
         grille.innerHTML = "";
         bibliotheque.forEach(livre => {
+            // On vérifie si une image existe, sinon on met une image grise par défaut
+            const imageAffichee = livre.image || "https://via.placeholder.com/400x300?text=Image+Aya";
+            
             grille.innerHTML += `
                 <div class="book-card">
                     <div>
-                        // Ajoutez cette ligne juste après <div class="book-card">
-<img src="${livre.image}" style="width:100%; height:180px; object-fit:cover; border-radius:10px; margin-bottom:15px;">
-
+                        <img src="${imageAffichee}" style="width:100%; height:180px; object-fit:cover; border-radius:10px; margin-bottom:15px; border:1px solid #eee;">
                         <h3 style="margin-top:0;">${livre.titre}</h3>
                         <div class="price-main">${livre.pDT} TND</div>
                         <div class="price-others">${livre.pEUR} € | ${livre.pUSD} $</div>
@@ -173,7 +174,6 @@ let bibliotheque = JSON.parse(localStorage.getItem('aya_v5_final')) || [{"id":17
             `;
         });
     }
-
 
         
 
@@ -244,6 +244,7 @@ let bibliotheque = JSON.parse(localStorage.getItem('aya_v5_final')) || [{"id":17
 </script>
 </body>
 </html>
+
 
 
 
