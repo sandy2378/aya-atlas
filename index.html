@@ -132,9 +132,7 @@ let bibliotheque = JSON.parse(localStorage.getItem('aya_v5_final')) || [{"id":17
         afficherLivres();
     }
 
-    function afficherLivres() {
-        const grille = document.getElementById('maGrille');
-           function afficherLivres() {
+  function afficherLivres() {
         const grille = document.getElementById('maGrille');
         grille.innerHTML = "";
         bibliotheque.forEach(livre => {
@@ -237,6 +235,7 @@ let bibliotheque = JSON.parse(localStorage.getItem('aya_v5_final')) || [{"id":17
 </script>
 </body>
 </html>
+
 
 
 
