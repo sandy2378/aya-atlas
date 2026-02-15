@@ -78,30 +78,20 @@
 
 <script>
     // TES 22 LIVRES RÉINTÉGRÉS POUR LE DÉMARRAGE
-    const baseDonneesInitiale = [
-        {"id":1,"titre":"Cuisine Mexicain","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1z-3Wr_k8IlNR-MGHBHoV50kFYNNr_q1t/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400"},
-        {"id":2,"titre":"Recette Mexicain","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1ts7rf-X84tnDrn2ZXpLAi8Y_VWsbxVZY/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1512838243191-e81e8f66f1fd?w=400"},
-        {"id":3,"titre":"Cuisine Autriche","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1bzlE9g4X7xNcR-s7KanM5HFMhIAQ4Sge/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1599921841143-819065a55cc6?w=400"},
-        {"id":4,"titre":"Kitchen Austria","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1CTrSm_mmvgFcB0h6wR-PQfFnCN6nNMRV/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1574007943719-17251df7d04e?w=400"},
-        {"id":5,"titre":"Cuisine Saine","pDT":"10","pEUR":"10","pUSD":"10","lien":"https://drive.google.com/file/d/1O6lWAFBxXvzVCJArwvIaGBcOcTFoQRDV/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400"},
-        {"id":6,"titre":"Healthy Kitchen","pDT":"10","pEUR":"10","pUSD":"10","lien":"https://drive.google.com/file/d/1O6lWAFBxXvzVCJArwvIaGBcOcTFoQRDV/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400"},
-        {"id":7,"titre":"Recette pour diabétique","pDT":"10","pEUR":"10","pUSD":"10","lien":"https://drive.google.com/file/d/1A-bjSJ8Dg4urH8lpEsz1aQwRYmST0B4r/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400"},
-        {"id":8,"titre":"15 recipes for diabetics","pDT":"10","pEUR":"10","pUSD":"10","lien":"https://drive.google.com/file/d/1KFukkfheMUwMdWLSyN4O2B4UKnHg_9gX/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400"},
-        {"id":9,"titre":"Kitchen Argentina","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1VqMdL1OFR0n__h5gFetov1XJ_U6bnkqj/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1544025162-d76694265947?w=400"},
-        {"id":10,"titre":"Cuisine Argentine","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1Spxw6Yt7PeJU1l5PBXzZVdEkvZZ2cTLI/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1551811635-43089c1ec30c?w=400"},
-        {"id":11,"titre":"Kitchen Croatia","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1wyNyhG5tYWXTb3tXhROZEB8AnF5btiPJ/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1533777324565-a040eb52facd?w=400"},
-        {"id":12,"titre":"Cuisine croatie","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1siQkgvV7dDHAGx8yCK6sOeLLGTB9iHwL/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400"},
-        {"id":13,"titre":"Kitchen Tunisia","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1EO5_eePNJUulybZOHUcC6iI7rdq-kbNQ/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1541518763669-27fef04b14ea?w=400"},
-        {"id":14,"titre":"Cuisine tunisie","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1RPtYwm0F6q83kG_B-57r2BmPXEfVA9E-/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1589113331515-9bc7796342d6?w=400"},
-        {"id":15,"titre":"Kitchen Brasil","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1LIC6ZnWV-CYwEJIZrqnxciKL_nrnMT5Q/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1550507992-eb63ffee0847?w=400"},
-        {"id":16,"titre":"Cuisine Brésil","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1xPe-_tiLyVHU8R35qWn75u7b50Tr8CMF/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1593504049359-74330189a355?w=400"},
-        {"id":17,"titre":"Kitchen Czech","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1VwTtJKPvtU5bOUmh7uRSDbIfylnH0SYp/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1601050638949-34879799fecc?w=400"},
-        {"id":18,"titre":"Cuisine Tchèque","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1LI_6BAEMfghmjPijNrFZ5Lx8_Bg7813-/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=400"},
-        {"id":19,"titre":"Kitchen Himalayan","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/18wGsAG4n4yGPRV3CFRvwp4LNzTj_LnG_/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=400"},
-        {"id":20,"titre":"Cuisine Nepal","pDT":"3","pEUR":"5","pUSD":"5","lien":"https://drive.google.com/file/d/1mgKHhD6W__djBVqGf-GAlL4aJMHDa6RG/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1614712052144-0130f1406e12?w=400"},
-        {"id":21,"titre":"Recettes sucrées","pDT":"20","pEUR":"20","pUSD":"20","lien":"https://drive.google.com/file/d/1Ge72DvCWmrIh0ZeFDX4gQG4mx0hG94hZ/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=400"},
-        {"id":22,"titre":"Sweets recipes","pDT":"20","pEUR":"20","pUSD":"20","lien":"https://drive.google.com/file/d/1jvE_KkELZgFw-H7i9CXnMsnui8_nReXR/view?usp=drivesdk","image":"https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400"}
-    ];
+    
+// EXEMPLE :
+const catalogueInitial = [
+    {
+        "id": 1, 
+        "titre": "Cuisine Mexicaine",
+        "pDT": "3", 
+        "pEUR": "5", 
+        "pUSD": "5",
+        "lien": "https://drive.google.com/file/d/...", // TON LIEN PDF ICI
+        "image": "https://images.unsplash.com/..."    // TON LIEN IMAGE ICI
+    },
+    // Ajoute les autres livres à la suite...
+];
 
     let bibliotheque = JSON.parse(localStorage.getItem('aya_v5_final')) || baseDonneesInitiale;
     let modeAdmin = false;
@@ -136,14 +126,20 @@
             document.getElementById('admin').style.display = 'block';
             afficherLivres();
         }
+    
+function verifierCode(input, idBouton) {
+    // Si l'utilisateur tape AYA99 (peu importe les majuscules)
+    if(input.value.trim().toUpperCase() === "AYA99") {
+        // On affiche le bouton de téléchargement
+        document.getElementById(idBouton).style.display = 'block';
+        // On met la bordure en vert pour confirmer
+        input.style.border = "2px solid #27ae60";
+    } else {
+        // Sinon on cache le bouton
+        document.getElementById(idBouton).style.display = 'none';
+        input.style.border = "1px solid #ccc";
     }
-
-    function verifierCode(input, idBouton) {
-        if(input.value.trim().toUpperCase() === "AYA99") { // CODE SECRET : AYA99
-            document.getElementById(idBouton).style.display = 'block';
-            input.style.border = "2px solid green";
-        }
-    }
+}
 
     function validerAjout() {
         const t = document.getElementById('titre').value;
@@ -184,3 +180,4 @@
 
 </body>
 </html>
+
