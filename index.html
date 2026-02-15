@@ -75,13 +75,16 @@
         <button class="btn-secours" onclick="restaurerSauvegarde()">📤 IMPORTER / SECOURS</button>
     </div>
     <h3 style="color:var(--gold); margin-top:0;">AJOUTER UN LIVRE</h3>
-    <input type="text" id="titre" placeholder="Titre du livre">
+    <input type="text" id="titre" placeholder="Titre du livre (ex: Mexicain FR)">
     <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
         <input type="number" id="pDT" placeholder="TND">
         <input type="number" id="pEUR" placeholder="Euro €">
         <input type="number" id="pUSD" placeholder="Dollar $">
     </div>
     <input type="text" id="pdfLien" placeholder="Lien Google Drive du PDF">
+    
+    <input type="text" id="imgLien" placeholder="Lien de l'image (URL)">
+    
     <button onclick="validerAjout()" style="width:100%; padding:15px; background:var(--gold); color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer; margin-top:10px;">AJOUTER AU CATALOGUE</button>
 </div>
 
@@ -110,9 +113,11 @@ let bibliotheque = JSON.parse(localStorage.getItem('aya_v5_final')) || [{"id":17
         }
     }
 
+
     function validerAjout() {
         const t = document.getElementById('titre').value;
         const link = document.getElementById('pdfLien').value;
+        const img = document.getElementById('imgLien').value; // On récupère l'image
         if(!t || !link) return alert("Le titre et le lien PDF sont obligatoires !");
        
         const nouveauLivre = {
@@ -121,13 +126,15 @@ let bibliotheque = JSON.parse(localStorage.getItem('aya_v5_final')) || [{"id":17
             pDT: document.getElementById('pDT').value || "0",
             pEUR: document.getElementById('pEUR').value || "0",
             pUSD: document.getElementById('pUSD').value || "0",
-            lien: link
+            lien: link,
+            image: img || "https://via.placeholder.com/300x400?text=Aya+Atlas" // Image par défaut
         };
 
         bibliotheque.push(nouveauLivre);
         sauvegarder();
         document.getElementById('titre').value = "";
         document.getElementById('pdfLien').value = "";
+        document.getElementById('imgLien').value = ""; // On vide la case
         afficherLivres();
     }
 
@@ -138,6 +145,9 @@ let bibliotheque = JSON.parse(localStorage.getItem('aya_v5_final')) || [{"id":17
             grille.innerHTML += `
                 <div class="book-card">
                     <div>
+                        // Ajoutez cette ligne juste après <div class="book-card">
+<img src="${livre.image}" style="width:100%; height:180px; object-fit:cover; border-radius:10px; margin-bottom:15px;">
+
                         <h3 style="margin-top:0;">${livre.titre}</h3>
                         <div class="price-main">${livre.pDT} TND</div>
                         <div class="price-others">${livre.pEUR} € | ${livre.pUSD} $</div>
@@ -234,6 +244,7 @@ let bibliotheque = JSON.parse(localStorage.getItem('aya_v5_final')) || [{"id":17
 </script>
 </body>
 </html>
+
 
 
 
