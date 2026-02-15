@@ -134,6 +134,8 @@ let bibliotheque = JSON.parse(localStorage.getItem('aya_v5_final')) || [{"id":17
 
     function afficherLivres() {
         const grille = document.getElementById('maGrille');
+           function afficherLivres() {
+        const grille = document.getElementById('maGrille');
         grille.innerHTML = "";
         bibliotheque.forEach(livre => {
             grille.innerHTML += `
@@ -142,14 +144,15 @@ let bibliotheque = JSON.parse(localStorage.getItem('aya_v5_final')) || [{"id":17
                         <h3 style="margin-top:0;">${livre.titre}</h3>
                         <div class="price-main">${livre.pDT} TND</div>
                         <div class="price-others">${livre.pEUR} € | ${livre.pUSD} $</div>
+                        
                         <button class="btn-pay" onclick="ouvrirIban('${livre.titre}')">💳 PAYER LE LIVRE</button>
-                    </div>
-
-                    <div class="unlock-zone">
-                        <small>CODE DE DÉBLOCAGE :</small>
-                        <input type="text" placeholder="Entrez le code" oninput="verifierCode(this, 'dl-${livre.id}')" style="text-align:center; margin-top:5px;">
-                        <div id="dl-${livre.id}" style="display:none;">
-                            <a href="${livre.lien}" class="btn-download" target="_blank">📥 TÉLÉCHARGER</a>
+                        
+                        <div class="unlock-zone">
+                            <small>DÉJÀ PAYÉ ? ENTREZ VOTRE CODE :</small>
+                            <input type="text" placeholder="Entrez le code" oninput="verifierCode(this, 'dl-${livre.id}')" style="text-align:center; margin-top:5px;">
+                            <div id="dl-${livre.id}" style="display:none;">
+                                <a href="${livre.lien}" class="btn-download" target="_blank">📥 TÉLÉCHARGER</a>
+                            </div>
                         </div>
                     </div>
 
@@ -163,6 +166,9 @@ let bibliotheque = JSON.parse(localStorage.getItem('aya_v5_final')) || [{"id":17
             `;
         });
     }
+
+
+        
 
     function verifierCode(input, idBouton) {
         if(input.value.trim() === obtenirCodeDuJour()) {
@@ -231,6 +237,7 @@ let bibliotheque = JSON.parse(localStorage.getItem('aya_v5_final')) || [{"id":17
 </script>
 </body>
 </html>
+
 
 
 
