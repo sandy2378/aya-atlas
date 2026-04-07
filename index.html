@@ -104,15 +104,7 @@
         }
     }
 
-    function verifierCode(input, idBouton) {
-        if(input.value.trim().toUpperCase() === "BOSS") {
-            document.getElementById(idBouton).style.display = 'block';
-            input.style.border = "2px solid #27ae60";
-        } else {
-            document.getElementById(idBouton).style.display = 'none';
-            input.style.border = "1px solid #ccc";
-        }
-    }
+    
 
     function validerAjout() {
         const t = document.getElementById('titre').value;
@@ -142,10 +134,7 @@
         alert("Livre ajouté !");
     }
 
-    function ouvrirIban(titre) {
-        document.getElementById('ibanModal').style.display = 'block';
-        document.getElementById('whatsappBtn').onclick = () => window.open(`https://wa.me/21646248269?text=Bonjour, j'ai payé le livre : ${titre}`, '_blank');
-    }
+    
 
     function sauvegarder() { localStorage.setItem('aya_v5_final', JSON.stringify(bibliotheque)); }
     
