@@ -24,7 +24,7 @@
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
         .book-card { background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border-bottom: 5px solid var(--gold); text-align: center; padding: 25px; }
         
-        .btn-pay { background: var(--dark); color: var(--gold); border: 2px solid var(--gold); padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; margin-bottom: 15px; }
+        
         .unlock-zone { background: #fff9f0; padding: 15px; border-radius: 12px; border: 1px solid #ffeeba; margin-top: 15px; }
         .btn-download { background: var(--green); color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; text-decoration: none; display: block; margin-top: 10px; }
         
@@ -62,14 +62,7 @@
     <button onclick="validerAjout()" style="width:100%; padding:15px; background:var(--gold); color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">AJOUTER AU CATALOGUE</button>
 </div>
 
-<div id="ibanModal" class="modal">
-    <div class="modal-content">
-        <h2 style="color:var(--gold);">PAIEMENT</h2>
-        <p>Virement vers : <strong>TN59 12 301 00 00 133062172 43</strong></p>
-        <button id="whatsappBtn" class="btn-download" style="background:#25D366;">J'AI PAYÉ, RECEVOIR LE CODE</button>
-        <button onclick="document.getElementById('ibanModal').style.display='none'" style="margin-top:15px; background:none; border:none; color:red; cursor:pointer;">Fermer</button>
-    </div>
-</div>
+
 
 <section id="catalogue">
     <div class="grid" id="maGrille"></div>
@@ -81,6 +74,7 @@
     let bibliotheque = JSON.parse(localStorage.getItem('aya_v5_final')) || baseDonneesInitiale;
     let modeAdmin = false;
 
+    
     function afficherLivres() {
         const grille = document.getElementById('maGrille');
         grille.innerHTML = "";
@@ -88,18 +82,10 @@
             grille.innerHTML += `
                 <div class="book-card">
                     <h3 style="margin-top:0; color:var(--dark); text-transform:uppercase;">${livre.titre}</h3>
-                    <div style="font-size:20px; font-weight:bold; color:var(--gold);">${livre.pDT} TND</div>
-                    <div style="font-size:12px; color:#777; margin-bottom:15px;">${livre.pEUR} € | ${livre.pUSD} $</div>
+                    <div style="font-size:14px; font-weight:bold; color:var(--green); margin-bottom:15px;">🎁 ACCÈS GRATUIT</div>
                     
-                    <button class="btn-pay" onclick="ouvrirIban('${livre.titre}')">💳 PAYER LE LIVRE</button>
+                    <a href="${livre.lien}" class="btn-download" target="_blank" style="text-decoration:none;">📥 TÉLÉCHARGER LE PDF</a>
                     
-                    <div class="unlock-zone">
-                        <small>DÉJÀ PAYÉ ? ENTREZ LE CODE :</small>
-                        <input type="text" placeholder="Code ici" oninput="verifierCode(this, 'dl-${livre.id}')" style="text-align:center; margin-top:5px;">
-                        <div id="dl-${livre.id}" style="display:none;">
-                            <a href="${livre.lien}" class="btn-download" target="_blank">📥 TÉLÉCHARGER</a>
-                        </div>
-                    </div>
                     ${modeAdmin ? `<button onclick="supprimer(${livre.id})" style="color:red; background:none; border:none; margin-top:15px; cursor:pointer; text-decoration:underline; font-size:11px;">Supprimer ce livre</button>` : ''}
                 </div>
             `;
